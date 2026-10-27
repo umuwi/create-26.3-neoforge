@@ -89,8 +89,11 @@ public class WrappedLevel extends Level {
         return level.getRespawnData();
     }
 
+    // Сырой Collection: у ванили (Fabric) тут Collection<EnderDragonPart>, у NeoForge —
+    // Collection<? extends PartEntity<?>>; сырой тип переопределяет оба, код остаётся общим.
     @Override
-    public Collection<EnderDragonPart> dragonParts() {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Collection dragonParts() {
         return level.dragonParts();
     }
 

@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT (Create), CC0-1.0 (Create Fly)"
+issueTrackerURL = "https://blauncher.ru"
+
+[[mods]]
+modId = "create"
+version = "${version}"
+displayName = "Create"
+logoFile = "assets/pack.png"
+authors = "simibubi и Creators of Create; порт Create Fly — ZurrTum; перенос на NeoForge 26.3 — BLauncher"
+description = '''
+Неофициальный порт Create на Minecraft 26.3 (NeoForge), основан на Create Fly.
+Оригинальный мод: Creators of Create. Create Fly: ZurrTum. Перенос на 26.3: BLauncher.
+'''
+
+[[mixins]]
+config = "create.mixins.json"
+
+[[mixins]]
+config = "create.client.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[dependencies.create]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.3.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.create]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.3,26.4)"
+ordering = "NONE"
+side = "BOTH"

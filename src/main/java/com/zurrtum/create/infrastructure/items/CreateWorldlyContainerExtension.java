@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface WorldlyContainerExtension extends Container {
+public interface CreateWorldlyContainerExtension extends Container {
     static int findEndIndex(int[] slots, int start, int end) {
         for (int i = slots.length - 1; i >= start; i--) {
             if (slots[i] <= end) {

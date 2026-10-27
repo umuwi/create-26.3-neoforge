@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unused")
-public interface ContainerExtension extends Iterable<ItemStack> {
+public interface CreateContainerExtension extends Iterable<ItemStack> {
     Hash.Strategy<ItemStack> ITEM_STACK_HASH_STRATEGY = new Hash.Strategy<>() {
         @Override
         public boolean equals(@Nullable ItemStack stack, @Nullable ItemStack other) {

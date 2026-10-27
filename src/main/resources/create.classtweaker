@@ -213,8 +213,8 @@ mutable field net/minecraft/world/item/context/BlockPlaceContext relativePos Lne
 mutable field net/minecraft/world/item/CreativeModeTab column I
 mutable field net/minecraft/world/item/CreativeModeTab row Lnet/minecraft/world/item/CreativeModeTab$Row;
 mutable field net/minecraft/world/level/biome/BiomeGenerationSettings features Ljava/util/List;
-transitive-inject-interface net/minecraft/world/Container com/zurrtum/create/infrastructure/items/ContainerExtension
-transitive-inject-interface net/minecraft/world/WorldlyContainer com/zurrtum/create/infrastructure/items/WorldlyContainerExtension
+transitive-inject-interface net/minecraft/world/Container com/zurrtum/create/infrastructure/items/CreateContainerExtension
+transitive-inject-interface net/minecraft/world/WorldlyContainer com/zurrtum/create/infrastructure/items/CreateWorldlyContainerExtension
 accessible method net/minecraft/world/level/material/Fluids register (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/material/Fluid;)Lnet/minecraft/world/level/material/Fluid;
 accessible method net/minecraft/world/level/block/Blocks register (Lnet/minecraft/references/BlockItemId;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)Lnet/minecraft/world/level/block/Block;
 accessible method net/minecraft/world/level/block/Blocks register (Lnet/minecraft/references/BlockItemId;Ljava/util/function/Function;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)Lnet/minecraft/world/level/block/Block;

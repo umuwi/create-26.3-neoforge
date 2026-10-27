@@ -1,6 +1,6 @@
 package com.zurrtum.create.mixin;
 
-import com.zurrtum.create.infrastructure.items.WorldlyContainerExtension;
+import com.zurrtum.create.infrastructure.items.CreateWorldlyContainerExtension;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Mixin(WorldlyContainer.class)
-public interface WorldlyContainerMixin extends WorldlyContainerExtension {
+public interface WorldlyContainerMixin extends CreateWorldlyContainerExtension {
     @Shadow
     int[] getSlotsForFace(Direction direction);
 
@@ -254,11 +254,11 @@ public interface WorldlyContainerMixin extends WorldlyContainerExtension {
     default int countSpace(@NonNull ItemStack stack, int maxAmount, int start, int end, @Nullable Direction side) {
         int count = 0;
         int[] slots = getSlotsForFace(side);
-        start = WorldlyContainerExtension.findStartIndex(slots, start);
+        start = CreateWorldlyContainerExtension.findStartIndex(slots, start);
         if (start == -1) {
             return 0;
         }
-        end = WorldlyContainerExtension.findEndIndex(slots, start, end);
+        end = CreateWorldlyContainerExtension.findEndIndex(slots, start, end);
         if (end == -1) {
             return 0;
         }
@@ -375,11 +375,11 @@ public interface WorldlyContainerMixin extends WorldlyContainerExtension {
             return countSpace(stack, count, start, end, side) == count;
         }
         int[] slots = getSlotsForFace(side);
-        start = WorldlyContainerExtension.findStartIndex(slots, start);
+        start = CreateWorldlyContainerExtension.findStartIndex(slots, start);
         if (start == -1) {
             return false;
         }
-        end = WorldlyContainerExtension.findEndIndex(slots, start, end);
+        end = CreateWorldlyContainerExtension.findEndIndex(slots, start, end);
         if (end == -1) {
             return false;
         }
@@ -875,11 +875,11 @@ public interface WorldlyContainerMixin extends WorldlyContainerExtension {
     default int insert(@NonNull ItemStack stack, int maxAmount, int start, int end, @Nullable Direction side) {
         int remaining = maxAmount;
         int[] slots = getSlotsForFace(side);
-        start = WorldlyContainerExtension.findStartIndex(slots, start);
+        start = CreateWorldlyContainerExtension.findStartIndex(slots, start);
         if (start == -1) {
             return 0;
         }
-        end = WorldlyContainerExtension.findEndIndex(slots, start, end);
+        end = CreateWorldlyContainerExtension.findEndIndex(slots, start, end);
         if (end == -1) {
             return 0;
         }
@@ -1060,11 +1060,11 @@ public interface WorldlyContainerMixin extends WorldlyContainerExtension {
         }
         boolean dirty = false;
         int[] slots = getSlotsForFace(side);
-        start = WorldlyContainerExtension.findStartIndex(slots, start);
+        start = CreateWorldlyContainerExtension.findStartIndex(slots, start);
         if (start == -1) {
             return stacks;
         }
-        end = WorldlyContainerExtension.findEndIndex(slots, start, end);
+        end = CreateWorldlyContainerExtension.findEndIndex(slots, start, end);
         if (end == -1) {
             return stacks;
         }

@@ -1,6 +1,6 @@
 package com.zurrtum.create.mixin;
 
-import com.zurrtum.create.infrastructure.items.ContainerExtension;
+import com.zurrtum.create.infrastructure.items.CreateContainerExtension;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Mixin(Container.class)
-public interface ContainerMixin extends ContainerExtension {
+public interface ContainerMixin extends CreateContainerExtension {
     @Shadow
     void setItem(int slot, ItemStack itemStack);
 
