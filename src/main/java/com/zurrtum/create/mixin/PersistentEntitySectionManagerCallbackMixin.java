@@ -20,8 +20,9 @@ public class PersistentEntitySectionManagerCallbackMixin<T extends EntityAccess>
     @Shadow
     private long currentSectionKey;
 
+    // ordinal = 0: NeoForge добавил в onMove второй long (oldSectionKey) после нашего; берём тот же, что в ванили.
     @Inject(method = "onMove()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/entity/PersistentEntitySectionManager$Callback;updateStatus(Lnet/minecraft/world/level/entity/Visibility;Lnet/minecraft/world/level/entity/Visibility;)V"))
-    private void onEnteringSection(CallbackInfo ci, @Local long oldPos) {
+    private void onEnteringSection(CallbackInfo ci, @Local(ordinal = 0) long oldPos) {
         if (entity instanceof Entity realEntity) {
             CarriageEntityHandler.onEntityEnterSection(realEntity, oldPos, currentSectionKey);
         }

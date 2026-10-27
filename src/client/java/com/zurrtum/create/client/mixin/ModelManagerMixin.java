@@ -13,7 +13,8 @@ import java.util.Map;
 
 @Mixin(ModelManager.class)
 public class ModelManagerMixin {
-    @Inject(method = "discoverModelDependencies", at = @At(value = "NEW", target = "(Lnet/minecraft/client/resources/model/ResolvedModel;Ljava/util/Map;)Lnet/minecraft/client/resources/model/ModelManager$ResolvedModels;"))
+    // require = 0: у NeoForge эта перегрузка только передаёт вызов новой (с StandaloneModelLoader) — для неё ниже.
+    @Inject(require = 0, method = "discoverModelDependencies(Ljava/util/Map;Lnet/minecraft/client/resources/model/BlockStateModelLoader$LoadedModels;Lnet/minecraft/client/resources/model/ClientItemInfoLoader$LoadedClientInfos;)Lnet/minecraft/client/resources/model/ModelManager$ResolvedModels;", at = @At(value = "NEW", target = "(Lnet/minecraft/client/resources/model/ResolvedModel;Ljava/util/Map;)Lnet/minecraft/client/resources/model/ModelManager$ResolvedModels;"))
     private static void collect(
         Map<Identifier, UnbakedModel> allModels,
         BlockStateModelLoader.LoadedModels blockStateModels,
@@ -21,6 +22,11 @@ public class ModelManagerMixin {
         CallbackInfoReturnable<ModelManager.ResolvedModels> cir,
         @Local ModelDiscovery result
     ) {
+        PartialModelEventHandler.getRegisterAdditional().keySet().forEach(result::getOrCreateModel);
+    }
+
+    @Inject(require = 0, method = "discoverModelDependencies(Ljava/util/Map;Lnet/minecraft/client/resources/model/BlockStateModelLoader$LoadedModels;Lnet/minecraft/client/resources/model/ClientItemInfoLoader$LoadedClientInfos;Lnet/neoforged/neoforge/client/model/standalone/StandaloneModelLoader$LoadedModels;)Lnet/minecraft/client/resources/model/ModelManager$ResolvedModels;", at = @At(value = "NEW", target = "(Lnet/minecraft/client/resources/model/ResolvedModel;Ljava/util/Map;)Lnet/minecraft/client/resources/model/ModelManager$ResolvedModels;"))
+    private static void collectNeoForge(CallbackInfoReturnable<ModelManager.ResolvedModels> cir, @Local ModelDiscovery result) {
         PartialModelEventHandler.getRegisterAdditional().keySet().forEach(result::getOrCreateModel);
     }
 }

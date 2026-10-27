@@ -20,14 +20,17 @@ public class KeyboardHandlerMixin {
     @Final
     private Minecraft minecraft;
 
-    @Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At(value = "RETURN", ordinal = 4))
+    // В ванили 5-й return — конец ветки «клавиша отпущена» (action == 0), а TAIL достигается только при
+    // нажатии. NeoForge дописал в конец ClientHooks.onKeyInput, и обе ветки сходятся в TAIL — поэтому
+    // return #4 там нет (require = 0), а TAIL сам различает нажатие по action.
+    @Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At(value = "RETURN", ordinal = 4), require = 0)
     private void onKeyReleased(long handle, int action, KeyEvent event, CallbackInfo ci) {
         onKey(event, false);
     }
 
     @Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At("TAIL"))
     private void onKey(long handle, int action, KeyEvent event, CallbackInfo ci) {
-        onKey(event, true);
+        onKey(event, action != 0);
     }
 
     @Unique

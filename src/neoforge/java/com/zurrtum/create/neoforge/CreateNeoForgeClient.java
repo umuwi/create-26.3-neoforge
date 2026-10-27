@@ -32,7 +32,7 @@ final class CreateNeoForgeClient {
     }
 
     static void init(IEventBus modBus) {
-        new com.zurrtum.create.client.Create().onInitializeClient();
+        // Сам onInitializeClient — позже, в Minecraft.<init> (см. MinecraftInitMixin): здесь Minecraft ещё нет.
         modBus.addListener(CreateNeoForgeClient::registerPictureInPicture);
         modBus.addListener(CreateNeoForgeClient::registerGuiLayers);
         modBus.addListener(CreateNeoForgeClient::addReloadListeners);
@@ -101,6 +101,8 @@ final class CreateNeoForgeClient {
         Class<? extends PictureInPictureRenderState> state,
         Supplier<? extends PictureInPictureRenderer<?>> factory
     ) {
-        event.register((Class) state, (Supplier) factory);
+        // Один экземпляр на класс: рендереры Create рассчитаны быть одиночками (см. PictureInPictureRendererPoolMixin).
+        Supplier<? extends PictureInPictureRenderer<?>> shared = com.google.common.base.Suppliers.memoize(factory::get);
+        event.register((Class) state, (Supplier) shared);
     }
 }
