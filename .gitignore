@@ -39,3 +39,7 @@ replay_*.log
 *.hprof
 *.jfr
 run-neo/
+
+# запуски для проверок
+run/
+run-neo/

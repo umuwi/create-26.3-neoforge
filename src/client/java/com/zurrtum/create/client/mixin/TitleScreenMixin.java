@@ -2,6 +2,7 @@ package com.zurrtum.create.client.mixin;
 
 import com.zurrtum.create.client.blauncher.BLauncherNotice;
 import com.zurrtum.create.client.blauncher.BLauncherNoticeWidget;
+import com.zurrtum.create.client.infrastructure.gui.OpenCreateMenuButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TitleScreenMixin extends Screen {
     protected TitleScreenMixin(Component title) {
         super(title);
+    }
+
+    // Кнопка-очки Create слева от «Сетевая игра», как в оригинале (см. OpenCreateMenuButton).
+    @Inject(method = "init()V", at = @At("TAIL"))
+    private void create$addMenuButton(CallbackInfo ci) {
+        OpenCreateMenuButton button = OpenCreateMenuButton.forScreen(this, children());
+        if (button != null) {
+            addRenderableWidget(button);
+        }
     }
 
     @Inject(method = "init()V", at = @At("TAIL"))

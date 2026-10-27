@@ -248,10 +248,31 @@ public abstract class MinecraftMixin {
             create$debugPonder = null;
             com.zurrtum.create.client.catnip.gui.ScreenOpener.open(com.zurrtum.create.client.ponder.foundation.ui.PonderUI.of(id));
         }
+        // То же для меню Create: -Dcreate.debugMenu=true открывает его поверх меню паузы.
+        // Сначала меню паузы (видна кнопка-очки), через 5 секунд — само меню Create.
+        if (create$debugMenu && level != null && player != null && player.tickCount > 60) {
+            create$debugMenu = false;
+            Minecraft mc = (Minecraft) (Object) this;
+            mc.gui.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true));
+            // Пауза останавливает тики — второй шаг по таймеру.
+            Thread t = new Thread(() -> {
+                try {
+                    Thread.sleep(9000);
+                } catch (InterruptedException ignored) {
+                }
+                mc.execute(() -> com.zurrtum.create.client.catnip.gui.ScreenOpener.open(
+                    new com.zurrtum.create.client.infrastructure.gui.CreateMainMenuScreen(mc.gui.screen())));
+            }, "create-debug-menu");
+            t.setDaemon(true);
+            t.start();
+        }
     }
 
     @Unique
     private static String create$debugPonder = System.getProperty("ponder.debugOpen");
+
+    @Unique
+    private static boolean create$debugMenu = Boolean.getBoolean("create.debugMenu");
 
     @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     private void doItemUse(CallbackInfo ci, @Local InteractionHand hand) {
