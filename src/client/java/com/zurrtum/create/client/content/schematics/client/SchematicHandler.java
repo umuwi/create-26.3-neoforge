@@ -162,7 +162,9 @@ public class SchematicHandler {
 
         try {
             schematic.placeInWorld(w, pos, pos, placementSettings, w.getRandom(), Block.UPDATE_CLIENTS);
-            for (BlockEntity blockEntity : w.getBlockEntities()) {
+            // Копия: tick() блоков Create запрашивает соседние блок-сущности, и SchematicLevel создаёт их на лету —
+            // перебор живой коллекции падал ConcurrentModificationException (27.10.2026, предпросмотр схематики).
+            for (BlockEntity blockEntity : ImmutableList.copyOf(w.getBlockEntities())) {
                 blockEntity.setLevel(w);
                 if (blockEntity instanceof SmartBlockEntity smartBlockEntity) {
                     smartBlockEntity.tick();
@@ -184,7 +186,7 @@ public class SchematicHandler {
             Rotation.NONE,
             placementSettings.getMirror()
         );
-        for (BlockEntity be : wMirroredFB.getRenderedBlockEntities()) {
+        for (BlockEntity be : ImmutableList.copyOf(wMirroredFB.getRenderedBlockEntities())) {
             transform.apply(be);
             if (be instanceof SmartBlockEntity smartBlockEntity) {
                 smartBlockEntity.tick();
@@ -201,7 +203,7 @@ public class SchematicHandler {
             Rotation.NONE,
             placementSettings.getMirror()
         );
-        for (BlockEntity be : wMirroredLR.getRenderedBlockEntities()) {
+        for (BlockEntity be : ImmutableList.copyOf(wMirroredLR.getRenderedBlockEntities())) {
             transform.apply(be);
             if (be instanceof SmartBlockEntity smartBlockEntity) {
                 smartBlockEntity.tick();
@@ -215,7 +217,7 @@ public class SchematicHandler {
     }
 
     private void fixControllerBlockEntities(SchematicLevel level) {
-        for (BlockEntity blockEntity : level.getBlockEntities()) {
+        for (BlockEntity blockEntity : ImmutableList.copyOf(level.getBlockEntities())) {
             if (!(blockEntity instanceof IMultiBlockEntityContainer multiBlockEntity)) {
                 continue;
             }

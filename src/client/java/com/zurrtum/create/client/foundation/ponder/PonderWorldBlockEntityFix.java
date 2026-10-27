@@ -1,5 +1,6 @@
 package com.zurrtum.create.client.foundation.ponder;
 
+import com.google.common.collect.ImmutableList;
 import com.zurrtum.create.client.ponder.api.level.PonderLevel;
 import com.zurrtum.create.content.kinetics.belt.BeltBlock;
 import com.zurrtum.create.content.kinetics.belt.BeltBlockEntity;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class PonderWorldBlockEntityFix {
 
     public static void fixControllerBlockEntities(PonderLevel world) {
-        for (BlockEntity blockEntity : world.getBlockEntities()) {
+        for (BlockEntity blockEntity : ImmutableList.copyOf(world.getBlockEntities())) {
 
             if (blockEntity instanceof BeltBlockEntity beltBlockEntity) {
                 if (!beltBlockEntity.isController()) {
