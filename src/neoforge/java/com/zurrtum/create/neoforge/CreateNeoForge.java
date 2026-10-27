@@ -23,10 +23,31 @@ import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 public final class CreateNeoForge {
     public CreateNeoForge(IEventBus modBus, ModContainer container, Dist dist) {
         new com.zurrtum.create.Create().onInitialize();
+        markRegistriesSynced();
         NeoForge.EVENT_BUS.addListener(CreateNeoForge::onBreathe);
         NeoForge.EVENT_BUS.addListener(CreateNeoForge::addReloadListeners);
         if (dist.isClient()) {
             CreateNeoForgeClient.init(modBus);
+        }
+    }
+
+    // Create кладёт свои реестры прямо в BuiltInRegistries, минуя RegistryBuilder, и NeoForge считает их
+    // несинхронизируемыми: ByteBufCodecs.registry() по таким падает «Cannot use ID syncing for non-synced
+    // built-in registry». 27.10.2026 на сервере так отключало игрока при открытии окна расписания поезда
+    // (OpenScreenPacket → create:menu_type); то же грозило фильтрам (item_attribute_type). setSync закрытый.
+    private static void markRegistriesSynced() {
+        try {
+            java.lang.reflect.Method setSync = net.neoforged.neoforge.registries.BaseMappedRegistry.class
+                .getDeclaredMethod("setSync", boolean.class);
+            setSync.setAccessible(true);
+            for (net.minecraft.core.Registry<?> registry : net.minecraft.core.registries.BuiltInRegistries.REGISTRY) {
+                if ("create".equals(registry.key().identifier().getNamespace())
+                    && registry instanceof net.neoforged.neoforge.registries.BaseMappedRegistry<?> mapped) {
+                    setSync.invoke(mapped, true);
+                }
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Create: не удалось включить синхронизацию реестров", e);
         }
     }
 
