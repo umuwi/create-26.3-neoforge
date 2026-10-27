@@ -3625,5 +3625,8 @@
   "tag.item.create.valve_handles": "Ручки вентилей",
   "tag.recipe_serializer.create.automation_ignore": "Неавтоматизируемые",
   "fluid.create.milk": "Молоко",
-  "block.create.milk": "Молоко"
+  "block.create.milk": "Молоко",
+  "create.blauncher.notice.title": "Create 26.3",
+  "create.blauncher.notice.by": "порт BLauncher",
+  "create.blauncher.notice.tooltip": "Неофициальный порт Create на Minecraft 26.3.\nCreate — Creators of Create. Основа — Create Fly от ZurrTum.\nПеренос на 26.3 — BLauncher, играйте через BLauncher.\nЩелчок — открыть blauncher.ru, × — скрыть."
 }

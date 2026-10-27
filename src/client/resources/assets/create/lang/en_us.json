@@ -3641,5 +3641,8 @@
   "tag.recipe_serializer.create.automation_ignore": "Non-automatable",
   "fluid.create.milk": "Milk",
   "block.create.milk": "Milk",
-  "key.category.create.binding": "Create"
+  "key.category.create.binding": "Create",
+  "create.blauncher.notice.title": "Create 26.3",
+  "create.blauncher.notice.by": "BLauncher port",
+  "create.blauncher.notice.tooltip": "Unofficial port of Create for Minecraft 26.3.\nCreate — Creators of Create. Based on Create Fly by ZurrTum.\nPorted to 26.3 by BLauncher — play it in BLauncher.\nClick to open blauncher.ru, × to hide."
 }
