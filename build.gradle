@@ -83,6 +83,10 @@ neoForge {
             if (project.hasProperty('quickPlay')) {
                 programArguments.addAll('--quickPlaySingleplayer', project.property('quickPlay').toString())
             }
+            // -PquickPlayServer=localhost:25598 — сразу зайти на сервер (проверка игры по сети с runServer)
+            if (project.hasProperty('quickPlayServer')) {
+                programArguments.addAll('--quickPlayMultiplayer', project.property('quickPlayServer').toString())
+            }
             // -PjvmProps=a=b,c=d — свойства JVM для временных отладочных флагов
             if (project.hasProperty('jvmProps')) {
                 project.property('jvmProps').toString().split(',').each {
