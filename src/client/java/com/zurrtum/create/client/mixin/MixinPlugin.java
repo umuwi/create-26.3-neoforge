@@ -41,7 +41,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
             mixins.add("RrvRecipeViewMenuMixin");
             mixins.add("RrvRecipeViewScreenMixin");
         }
-        if (!loader.isModLoaded("fabric-creative-tab-api-v1")) {
+        // У NeoForge своё листание вкладок (стрелки «1 / 2» над меню); вторая копия из Fabric API давала
+        // два переключателя страниц, из которых работал один (27.10.2026, сообщил владелец).
+        if (!loader.isModLoaded("fabric-creative-tab-api-v1") && !loader.isModLoaded("neoforge")) {
             mixins.add("CreativeModeInventoryScreenMixin");
         }
         if (loader.isModLoaded("fabric-renderer-api-v1")) {
