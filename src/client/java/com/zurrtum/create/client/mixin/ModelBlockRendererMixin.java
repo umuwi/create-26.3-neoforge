@@ -92,8 +92,15 @@ public abstract class ModelBlockRendererMixin {
         BlockPos neighborPos
     );
 
-    @WrapOperation(method = "<init>", at = @At(value = "NEW", target = "()Lnet/minecraft/client/renderer/block/BlockModelLighter;"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "<init>", at = @At(value = "NEW", target = "()Lnet/minecraft/client/renderer/block/BlockModelLighter;"))
     private BlockModelLighter createModelLighter(Operation<BlockModelLighter> original) {
+        return new ModelLighter();
+    }
+
+    // NeoForge создаёт освещение через EnhancedBlockModelLighter.newInstance(), а не new BlockModelLighter().
+    @WrapOperation(require = 0, method = "<init>", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/client/model/ao/EnhancedBlockModelLighter;newInstance()Lnet/minecraft/client/renderer/block/BlockModelLighter;"))
+    private BlockModelLighter createModelLighterNeoForge(Operation<BlockModelLighter> original) {
         return new ModelLighter();
     }
 

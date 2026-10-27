@@ -1,5 +1,6 @@
 package com.zurrtum.create.mixin;
 
+import net.fabricmc.loader.api.FabricLoader;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.zurrtum.create.content.kinetics.belt.BeltHelper;
 import com.zurrtum.create.content.kinetics.mixer.PotionRecipe;
@@ -28,6 +29,11 @@ import java.util.concurrent.Executor;
 public class ReloadableServerResourcesMixin {
     @ModifyReturnValue(method = "listeners()Ljava/util/List;", at = @At("RETURN"))
     private List<PreparableReloadListener> add(List<PreparableReloadListener> original) {
+        // NeoForge запрещает добавлять слушателей миксином — там они идут через AddServerReloadListenersEvent
+        // (CreateNeoForge.addReloadListeners).
+        if (FabricLoader.getInstance().isModLoaded("neoforge")) {
+            return original;
+        }
         List<PreparableReloadListener> list = new ArrayList<>(original);
         list.add(RecipeFinder.LISTENER);
         list.add(RecipeTrieFinder.LISTENER);

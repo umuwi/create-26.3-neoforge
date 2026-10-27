@@ -132,7 +132,8 @@ public abstract class EntityMixin implements SyncedDataHolder {
         return original.call(entity, pose);
     }
 
-    @WrapOperation(method = "playStepSound(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "playStepSound(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
     private SoundType getStepSound(
         BlockState state,
         Operation<SoundType> original,
@@ -160,7 +161,8 @@ public abstract class EntityMixin implements SyncedDataHolder {
         return false;
     }
 
-    @WrapOperation(method = "restituteMovementAfterCollisions(Lnet/minecraft/world/level/block/state/BlockState;ZZLnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBlockBounciness(Lnet/minecraft/world/level/block/Block;)D"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "restituteMovementAfterCollisions(Lnet/minecraft/world/level/block/state/BlockState;ZZLnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBlockBounciness(Lnet/minecraft/world/level/block/Block;)D"))
     private double getBlockBounciness(
         Entity instance,
         Block onBlock,

@@ -75,11 +75,14 @@ neoForge {
     interfaceInjectionData = files('src/neoforge/interfaces.json')
 
     runs {
+        // Свои папки, чтобы не смешивать с мирами Fabric-ветки в run/
         client {
             client()
+            gameDirectory = project.file('run-neo/client')
         }
         server {
             server()
+            gameDirectory = project.file('run-neo/server')
             programArgument '--nogui'
         }
     }

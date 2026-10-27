@@ -65,7 +65,8 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @WrapOperation(method = "travelInAir(Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "travelInAir(Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
     private float getSlipperiness(Block block, Operation<Float> original, @Local BlockPos posBelow) {
         if (block instanceof SlipperinessControlBlock controlBlock) {
             return controlBlock.getSlipperiness(level(), posBelow);
@@ -73,7 +74,8 @@ public abstract class LivingEntityMixin extends Entity {
         return original.call(block);
     }
 
-    @WrapOperation(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
     private boolean breatheInLava(
         LivingEntity entity,
         TagKey<Fluid> tagKey,
@@ -89,7 +91,8 @@ public abstract class LivingEntityMixin extends Entity {
         return false;
     }
 
-    @WrapOperation(method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffectUtil;hasWaterBreathing(Lnet/minecraft/world/entity/LivingEntity;)Z"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "baseTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffectUtil;hasWaterBreathing(Lnet/minecraft/world/entity/LivingEntity;)Z"))
     private boolean canBreatheInWater(LivingEntity mob, Operation<Boolean> original, @Local ServerLevel level) {
         if (original.call(mob)) {
             return true;
@@ -225,12 +228,14 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @WrapOperation(method = "handleOnClimbable(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "handleOnClimbable(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z"))
     private boolean isScaffolding(BlockState state, Object block, Operation<Boolean> original) {
         return original.call(state, block) || state.getBlock() instanceof ScaffoldingControlBlock;
     }
 
-    @WrapOperation(method = "playBlockFallSound()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "playBlockFallSound()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
     private SoundType getBlockFallSound(
         BlockState state,
         Operation<SoundType> original,

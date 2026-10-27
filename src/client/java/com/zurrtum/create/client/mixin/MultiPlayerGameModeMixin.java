@@ -147,8 +147,29 @@ public class MultiPlayerGameModeMixin {
         return original.call(instance, pos);
     }
 
-    @WrapOperation(method = "lambda$startDestroyBlock$1(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "lambda$startDestroyBlock$1(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
     private boolean onLeftClick2(
+        MultiPlayerGameMode instance,
+        BlockPos pos,
+        Operation<Boolean> original,
+        @Local(argsOnly = true) Direction direction
+    ) {
+        if (ClipboardValueSettingsHandler.leftClickToPaste(
+            minecraft.level,
+            minecraft.player,
+            minecraft.player.getMainHandItem(),
+            direction,
+            pos
+        )) {
+            return false;
+        }
+        return original.call(instance, pos);
+    }
+
+    // NeoForge добавил в эту лямбду параметр PlayerInteractEvent.LeftClickBlock — тот же обработчик для его варианта.
+    @WrapOperation(require = 0, method = "lambda$startDestroyBlock$1(Lnet/minecraft/world/level/block/state/BlockState;Lnet/neoforged/neoforge/event/entity/player/PlayerInteractEvent$LeftClickBlock;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
+    private boolean onLeftClick2NeoForge(
         MultiPlayerGameMode instance,
         BlockPos pos,
         Operation<Boolean> original,
@@ -245,7 +266,8 @@ public class MultiPlayerGameModeMixin {
         return original.call(player, entity, hand, location);
     }
 
-    @WrapOperation(method = "destroyBlock(Lnet/minecraft/core/BlockPos;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "destroyBlock(Lnet/minecraft/core/BlockPos;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
     private boolean breakBlock(
         Level world,
         BlockPos pos,

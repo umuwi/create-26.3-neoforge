@@ -16,7 +16,8 @@ import java.io.Reader;
 
 @Mixin(ModelManager.class)
 public class LoadBlockModelMixin {
-    @Inject(method = "lambda$loadBlockModels$2", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/cuboid/CuboidModel;fromStream(Ljava/io/Reader;)Lnet/minecraft/client/resources/model/cuboid/CuboidModel;"), cancellable = true)
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @Inject(require = 0, method = "lambda$loadBlockModels$2", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/cuboid/CuboidModel;fromStream(Ljava/io/Reader;)Lnet/minecraft/client/resources/model/cuboid/CuboidModel;"), cancellable = true)
     private static void deserialize(
         CallbackInfoReturnable<Pair<Identifier, UnbakedModel>> cir,
         @Local Identifier modelId,

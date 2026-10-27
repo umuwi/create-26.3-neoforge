@@ -1,5 +1,7 @@
 package com.zurrtum.create.mixin;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.LevelReader;
 import org.jspecify.annotations.Nullable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +34,8 @@ public class BlockItemMixin {
         return original.call(context);
     }
 
-    @WrapOperation(method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
     private SoundType checkSound(
         BlockState instance,
         Operation<SoundType> original,
@@ -46,7 +49,8 @@ public class BlockItemMixin {
         return original.call(instance);
     }
 
-    @WrapOperation(method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;getPlaceSound(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/sounds/SoundEvent;"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;getPlaceSound(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/sounds/SoundEvent;"))
     private SoundEvent getGroup(
         BlockItem instance,
         BlockState blockState,
@@ -61,6 +65,45 @@ public class BlockItemMixin {
             }
         }
         return original.call(instance, blockState);
+    }
+
+    // NeoForge: те же два обработчика для его вызовов с уровнем — getSoundType(level, pos, entity)
+    // и getPlaceSound(state, level, pos, player); на Fabric этих вызовов нет, отсюда require = 0.
+    @WrapOperation(require = 0, method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/level/block/SoundType;"))
+    private SoundType checkSoundNeoForge(
+        BlockState instance,
+        LevelReader level,
+        BlockPos pos,
+        Entity entity,
+        Operation<SoundType> original,
+        @Local(argsOnly = true) BlockPlaceContext placeContext,
+        @Share("group") LocalRef<ItemPlacementSoundContext> group
+    ) {
+        if (placeContext instanceof ItemPlacementSoundContext context) {
+            group.set(context);
+            return null;
+        }
+        return original.call(instance, level, pos, entity);
+    }
+
+    @WrapOperation(require = 0, method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/BlockItem;getPlaceSound(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/sounds/SoundEvent;"))
+    private SoundEvent getGroupNeoForge(
+        BlockItem instance,
+        BlockState blockState,
+        Level level,
+        BlockPos pos,
+        Player player,
+        Operation<SoundEvent> original,
+        @Share("group") LocalRef<ItemPlacementSoundContext> group
+    ) {
+        ItemPlacementSoundContext context = group.get();
+        if (context != null) {
+            SoundEvent sound = context.getSound();
+            if (sound != null) {
+                return sound;
+            }
+        }
+        return original.call(instance, blockState, level, pos, player);
     }
 
     @WrapOperation(method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/SoundType;getVolume()F"))

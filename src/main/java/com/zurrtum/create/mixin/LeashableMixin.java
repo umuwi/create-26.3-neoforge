@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Leashable.class)
 public interface LeashableMixin {
-    @WrapOperation(method = "angularFriction(Lnet/minecraft/world/entity/Entity;)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "angularFriction(Lnet/minecraft/world/entity/Entity;)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
     private static <E extends Entity & Leashable> float getSlipperiness(
         Block block,
         Operation<Float> original,

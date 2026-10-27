@@ -1,5 +1,6 @@
 package com.zurrtum.create.client.mixin;
 
+import net.fabricmc.loader.api.FabricLoader;
 import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.component.SwingAnimation;
@@ -136,6 +137,11 @@ public abstract class MinecraftMixin {
     // 26.3: updateRawMouseInput убран (ввод через SDL); регистрируемся рядом с остальными слушателями.
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;registerReloadListeners(Lnet/minecraft/server/packs/resources/ReloadableResourceManager;)V"))
     private void register(GameConfig gameConfig, CallbackInfo ci) {
+        // NeoForge запрещает добавлять слушателей миксином — там они идут через AddClientReloadListenersEvent
+        // (CreateNeoForgeClient.addReloadListeners).
+        if (FabricLoader.getInstance().isModLoaded("neoforge")) {
+            return;
+        }
         if (RenderSystem.getDevice().getDeviceInfo().backendName().equals("OpenGL")) {
             resourceManager.registerReloadListener(FlwProgramsReloader.INSTANCE);
         }

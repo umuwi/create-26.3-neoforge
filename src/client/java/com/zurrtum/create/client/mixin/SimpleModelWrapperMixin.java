@@ -18,7 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SimpleModelWrapper.class)
 public class SimpleModelWrapperMixin {
-    @Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/block/dispatch/ModelState;)Lnet/minecraft/client/renderer/block/dispatch/BlockStateModelPart;", at = @At(value = "NEW", target = "(Lnet/minecraft/client/resources/model/geometry/QuadCollection;ZLnet/minecraft/client/resources/model/sprite/Material$Baked;)Lnet/minecraft/client/resources/model/SimpleModelWrapper;"), cancellable = true)
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @Inject(require = 0, method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/block/dispatch/ModelState;)Lnet/minecraft/client/renderer/block/dispatch/BlockStateModelPart;", at = @At(value = "NEW", target = "(Lnet/minecraft/client/resources/model/geometry/QuadCollection;ZLnet/minecraft/client/resources/model/sprite/Material$Baked;)Lnet/minecraft/client/resources/model/SimpleModelWrapper;"), cancellable = true)
     private static void bake(
         ModelBaker modelBakery,
         Identifier location,

@@ -57,7 +57,8 @@ public abstract class LevelChunkMixin {
         FluidHelper.invalidateInventoryCache(pos);
     }
 
-    @WrapOperation(method = "lambda$replaceWithPacketData$0(Lnet/minecraft/util/ProblemReporter$ScopedCollector;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;loadWithComponents(Lnet/minecraft/world/level/storage/ValueInput;)V"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "lambda$replaceWithPacketData$0(Lnet/minecraft/util/ProblemReporter$ScopedCollector;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;loadWithComponents(Lnet/minecraft/world/level/storage/ValueInput;)V"))
     private void handleUpdateTag(BlockEntity blockEntity, ValueInput view, Operation<Void> original) {
         if (blockEntity instanceof SyncedBlockEntity syncedBlockEntity) {
             syncedBlockEntity.handleUpdateTag(view);

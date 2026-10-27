@@ -1,5 +1,6 @@
 package com.zurrtum.create.client.mixin;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -16,6 +17,11 @@ public class MixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         mixins = new ArrayList<>();
         FabricLoader loader = FabricLoader.getInstance();
+        // На NeoForge у конфига миксинов нет пометки «только клиент» (на Fabric она в fabric.mod.json),
+        // и на выделенном сервере эти миксины тянули клиентские классы.
+        if (loader.getEnvironmentType() != EnvType.CLIENT) {
+            return;
+        }
         if (loader.isModLoaded("sodium")) {
             mixins.add("QuadRenderHelperMixin");
         }

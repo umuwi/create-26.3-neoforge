@@ -7,7 +7,7 @@ issueTrackerURL = "https://blauncher.ru"
 modId = "create"
 version = "${version}"
 displayName = "Create"
-logoFile = "assets/pack.png"
+iconFile = "assets/pack.png"
 authors = "simibubi и Creators of Create; порт Create Fly — ZurrTum; перенос на NeoForge 26.3 — BLauncher"
 description = '''
 Неофициальный порт Create на Minecraft 26.3 (NeoForge), основан на Create Fly.
@@ -19,6 +19,9 @@ config = "create.mixins.json"
 
 [[mixins]]
 config = "create.client.mixins.json"
+
+[[mixins]]
+config = "create.neoforge.mixins.json"
 
 [[accessTransformers]]
 file = "META-INF/accesstransformer.cfg"

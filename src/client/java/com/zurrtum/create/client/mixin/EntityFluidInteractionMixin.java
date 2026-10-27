@@ -23,8 +23,22 @@ public class EntityFluidInteractionMixin implements FluidInteractionPredicate {
         inModFluid = false;
     }
 
-    @Inject(method = "update(Lnet/minecraft/world/entity/Entity;Z)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;getY()I"))
+    // require = 0: на NeoForge цикл по жидкостям перенесён в update(Entity, Predicate<FluidType>) — для него
+    // ниже такие же инъекции (на Fabric этого метода нет).
+    @Inject(require = 0, method = "update(Lnet/minecraft/world/entity/Entity;Z)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;getY()I"))
     private void update(Entity entity, boolean ignoreCurrent, CallbackInfoReturnable<Boolean> cir, @Local FluidState fluidState) {
+        if (!inModFluid) {
+            inModFluid = fluidState.getType() instanceof FlowableFluid;
+        }
+    }
+
+    @Inject(require = 0, method = "update(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Predicate;)Z", at = @At("HEAD"))
+    private void clearNeoForge(CallbackInfoReturnable<Boolean> cir) {
+        inModFluid = false;
+    }
+
+    @Inject(require = 0, method = "update(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Predicate;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;getY()I"))
+    private void updateNeoForge(CallbackInfoReturnable<Boolean> cir, @Local FluidState fluidState) {
         if (!inModFluid) {
             inModFluid = fluidState.getType() instanceof FlowableFluid;
         }

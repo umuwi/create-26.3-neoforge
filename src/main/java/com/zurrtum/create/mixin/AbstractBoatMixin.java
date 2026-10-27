@@ -19,7 +19,8 @@ public abstract class AbstractBoatMixin extends Entity {
         super(type, world);
     }
 
-    @WrapOperation(method = "getGroundFriction()F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
+    // require = 0: на NeoForge эта цель заменена его хуком (см. src/neoforge), инъекция пропускается.
+    @WrapOperation(require = 0, method = "getGroundFriction()F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getFriction()F"))
     private float getSlipperiness(Block block, Operation<Float> original, @Local BlockPos.MutableBlockPos blockPos) {
         if (block instanceof SlipperinessControlBlock controlBlock) {
             return controlBlock.getSlipperiness(level(), blockPos);
