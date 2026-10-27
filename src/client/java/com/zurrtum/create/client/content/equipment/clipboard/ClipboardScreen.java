@@ -118,6 +118,9 @@ public class ClipboardScreen extends AbstractSimiScreen {
     protected void init() {
         setWindowSize(256, 256);
         super.init();
+        // 26.3 (SDL): символы приходят, только пока включён ввод текста. EditBox включает его сам, а планшет
+        // пишет без EditBox — как табличка, включаем на всё окно (27.10.2026: «планшет не пишется»).
+        minecraft.textInputManager().startTextInput(this);
         clearDisplayCache();
 
         int x = guiLeft;
@@ -355,6 +358,7 @@ public class ClipboardScreen extends AbstractSimiScreen {
 
     @Override
     public void removed() {
+        minecraft.textInputManager().stopTextInput(this);
         pages.forEach(list -> list.removeIf(ce -> ce.text.getString().isBlank()));
         pages.removeIf(List::isEmpty);
 
